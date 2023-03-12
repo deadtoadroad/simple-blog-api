@@ -1,0 +1,19 @@
+{
+  "files": ["src/index.ts"],
+  "include": ["tests/**/*.ts"],
+  "compilerOptions": {
+    /* Type checking */
+    "strict": true,
+    /* Modules */
+    "module": "commonjs",
+    /* Emit */
+    "outDir": "./dist",
+    /* Interop constraints */
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    /* Language and environment */
+    "target": "es2016",
+    /* Completeness */
+    "skipLibCheck": true
+  }
+}
