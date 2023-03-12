@@ -12,6 +12,39 @@ describe("users", () => {
       await prisma.user.deleteMany({});
     });
 
+    it("returns a 400 and error messages when body is missing", async () => {
+      const response = await request(app).post("/users").send();
+      expect(response.status).toBe(400);
+      expect(response.body.errors).toHaveLength(3);
+    });
+
+    it("returns a 400 and error message when name is missing", async () => {
+      const response = await request(app).post("/users").send({
+        email: "adam@boddington.net",
+        password: "password",
+      });
+      expect(response.status).toBe(400);
+      expect(response.body.errors).toHaveLength(1);
+    });
+
+    it("returns a 400 and error message when email is missing", async () => {
+      const response = await request(app).post("/users").send({
+        name: "Adam",
+        password: "password",
+      });
+      expect(response.status).toBe(400);
+      expect(response.body.errors).toHaveLength(1);
+    });
+
+    it("returns a 400 and error message when password is missing", async () => {
+      const response = await request(app).post("/users").send({
+        name: "Adam",
+        email: "adam@boddington.net",
+      });
+      expect(response.status).toBe(400);
+      expect(response.body.errors).toHaveLength(1);
+    });
+
     it("creates a user with admin the first time", async () => {
       const response = await request(app).post("/users").send({
         name: "Adam",
