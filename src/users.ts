@@ -1,4 +1,5 @@
 import { PrismaClient, User } from "@prisma/client";
+import bcrypt from "bcrypt";
 import { RequestHandler, Router } from "express";
 import { flow } from "lodash/fp";
 import { ifMap, isNullOrUndefined } from "./utilities";
@@ -30,10 +31,12 @@ export const post =
       return;
     }
     const { name, email, password } = user;
+    // https://codahale.com/how-to-safely-store-a-password/
+    const hash = await bcrypt.hash(password, 10);
     // The first user is granted admin.
     const count = await prisma.user.count({});
     const result = await prisma.user.create({
-      data: { name, email, password, isAdmin: count === 0 },
+      data: { name, email, password: hash, isAdmin: count === 0 },
     });
     res.json(result);
   };

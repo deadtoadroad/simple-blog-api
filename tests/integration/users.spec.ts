@@ -45,6 +45,17 @@ describe("users", () => {
       expect(response.body.errors).toHaveLength(1);
     });
 
+    it("creates a user with a safely stored password", async () => {
+      const response = await request(app).post("/users").send({
+        name: "Adam",
+        email: "adam@boddington.net",
+        password: "password",
+      });
+      expect(response.status).toBe(200);
+      const user = await prisma.user.findFirstOrThrow({});
+      expect(user.password).toMatch(/^\$2b\$10\$/);
+    });
+
     it("creates a user with admin the first time", async () => {
       const response = await request(app).post("/users").send({
         name: "Adam",
