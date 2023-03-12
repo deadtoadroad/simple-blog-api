@@ -1,7 +1,8 @@
 import dotenv from "dotenv";
+import dotenvExpand from "dotenv-expand";
 import { app } from "./app";
 
-dotenv.config();
+dotenvExpand.expand(dotenv.config());
 const port = process.env.EXPRESS_PORT;
 
 app.listen(port, () => {
