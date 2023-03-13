@@ -1,4 +1,5 @@
-import { Predicate } from "../utilities";
+import { flow } from "lodash/fp";
+import { ifMap, Predicate } from "../utilities";
 
 export type ValidationPayload<T> = { model: T; errors: string[] };
 
@@ -19,4 +20,16 @@ export const addError =
     errors: [...errors, error],
   });
 
-export const getErrors = <T>(payload: ValidationPayload<T>) => payload.errors;
+export const getErrors = <T>({ errors }: ValidationPayload<T>) => errors;
+
+export const validate = <T>(
+  model: T,
+  ...validators: ((payload: ValidationPayload<T>) => ValidationPayload<T>)[]
+): string[] =>
+  flow((model: T) => initialise(model), ...validators, getErrors)(model);
+
+export const validateModelProperty = <T, K extends keyof T>(
+  property: K,
+  predicate: Predicate<T[K]>,
+  error: string
+) => ifMap(ifModelProperty(property, predicate), addError(error));

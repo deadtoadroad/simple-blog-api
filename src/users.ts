@@ -1,30 +1,31 @@
 import { PrismaClient, User } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { RequestHandler, Router } from "express";
-import { flow } from "lodash/fp";
-import { ifMap, isNullOrUndefined } from "./utilities";
-import { addError, getErrors, ifModelProperty, initialise } from "./validation";
+import { isNullOrUndefined } from "./utilities";
+import { validate, validateModelProperty } from "./validation";
 
 export const post =
   (prisma: PrismaClient): RequestHandler =>
   async (req, res) => {
     const user = req.body;
-    const errors = flow(
-      initialise<User>,
-      ifMap(
-        ifModelProperty("name", isNullOrUndefined),
-        addError("The property 'name' is null or undefined")
+    const errors = validate<User>(
+      user,
+      validateModelProperty(
+        "name",
+        isNullOrUndefined,
+        "The property 'name' is null or undefined"
       ),
-      ifMap(
-        ifModelProperty("email", isNullOrUndefined),
-        addError("The property 'email' is null or undefined")
+      validateModelProperty(
+        "email",
+        isNullOrUndefined,
+        "The property 'email' is null or undefined"
       ),
-      ifMap(
-        ifModelProperty("password", isNullOrUndefined),
-        addError("The property 'password' is null or undefined")
-      ),
-      getErrors
-    )(user);
+      validateModelProperty(
+        "password",
+        isNullOrUndefined,
+        "The property 'password' is null or undefined"
+      )
+    );
     if (errors.length > 0) {
       res.status(400);
       res.json({ errors });
