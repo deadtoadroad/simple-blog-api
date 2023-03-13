@@ -1,6 +1,7 @@
 import { PrismaClient, User } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { RequestHandler, Router } from "express";
+import { omit } from "lodash/fp";
 import { isNullOrUndefined } from "./utilities";
 import { validate, validateModelProperty } from "./validation";
 
@@ -39,7 +40,7 @@ export const post =
     const result = await prisma.user.create({
       data: { name, email, password: hash, isAdmin: count === 0 },
     });
-    res.json(result);
+    res.json(omit("password", result));
   };
 
 export const users = (prisma: PrismaClient) => Router().post("/", post(prisma));

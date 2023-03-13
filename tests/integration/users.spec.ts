@@ -56,6 +56,16 @@ describe("users", () => {
       expect(user.password).toMatch(/^\$2b\$10\$/);
     });
 
+    it("does not return the user password", async () => {
+      const response = await request(app).post("/users").send({
+        name: "Adam",
+        email: "adam@boddington.net",
+        password: "password",
+      });
+      expect(response.status).toBe(200);
+      expect(response.body.password).toBeUndefined();
+    });
+
     it("creates a user with admin the first time", async () => {
       const response = await request(app).post("/users").send({
         name: "Adam",
