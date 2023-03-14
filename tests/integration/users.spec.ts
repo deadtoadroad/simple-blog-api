@@ -7,11 +7,11 @@ import { app } from "../../src/app";
 const prisma: PrismaClient = new PrismaClient();
 
 describe("users", () => {
-  describe("POST /users", () => {
-    beforeEach(async () => {
-      await prisma.user.deleteMany({});
-    });
+  beforeEach(async () => {
+    await prisma.user.deleteMany({});
+  });
 
+  describe("POST /users", () => {
     it("returns a 400 and error messages when body is missing", async () => {
       const response = await request(app).post("/users").send();
       expect(response.status).toBe(400);
@@ -94,6 +94,43 @@ describe("users", () => {
         where: { email: "olivia@boddington.net" },
       });
       expect(user.isAdmin).toBe(false);
+    });
+  });
+
+  describe("POST /users/login", () => {
+    beforeEach(async () => {
+      await request(app).post("/users").send({
+        name: "Adam",
+        email: "adam@boddington.net",
+        password: "password",
+      });
+    });
+
+    it("returns error if email is not found", async () => {
+      const response = await request(app).post("/users/login").send({
+        email: "nobody",
+        password: "password",
+      });
+      expect(response.status).toBe(200);
+      expect(response.body.errors).toHaveLength(1);
+    });
+
+    it("return error if password is incorrect", async () => {
+      const response = await request(app).post("/users/login").send({
+        email: "adam@boddington.net",
+        password: "wrong",
+      });
+      expect(response.status).toBe(200);
+      expect(response.body.errors).toHaveLength(1);
+    });
+
+    it("returns a JWT for a successful login", async () => {
+      const response = await request(app).post("/users/login").send({
+        email: "adam@boddington.net",
+        password: "password",
+      });
+      expect(response.status).toBe(200);
+      expect(response.body.token).toBeDefined();
     });
   });
 });
