@@ -1,5 +1,5 @@
 import { flow } from "lodash/fp";
-import { ifMap, Predicate } from "../utilities";
+import { maybeTransform, Predicate } from "../utilities";
 
 export type ValidationPayload<T> = { model: T; errors: string[] };
 
@@ -32,4 +32,4 @@ export const validateModelProperty = <T, K extends keyof T>(
   property: K,
   predicate: Predicate<T[K]>,
   error: string
-) => ifMap(ifModelProperty(property, predicate), addError(error));
+) => maybeTransform(ifModelProperty(property, predicate), addError(error));
