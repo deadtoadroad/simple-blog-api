@@ -27,16 +27,16 @@ Some things included:
 - Environments
 - Safe storage of passwords
 - Simple model validation
+- Authentication returning a JSON web token (JWT)
+  - Login endpoint for email/password
 
 Some things not yet included which might be next steps:
 
-- Authentication returning a JSON web token (JWT)
-  - Login endpoint for email/password
-  - Third-party authentication (OAuth)
 - Authentication handlers
   - Check JWT signature
 - Authorisation handlers
   - Check JWT roles
+- Third-party authentication (OAuth)
 - Unit tests
   - Test individual handlers and mock data access
     - Perhaps implement the repository pattern for easier mocking
@@ -51,7 +51,7 @@ Some things not yet included which might be next steps:
 - Auditing
   - Basic (`createdBy`, `createdOn`, `updatedBy`, `updatedOn`)
   - Or perhaps an event store
-    - Replay, checkpointing, CQRS, denormalised query database
+    - Replay, checkpoint, CQRS, denormalised query database
 
 Some future quality-of-life improvements:
 
