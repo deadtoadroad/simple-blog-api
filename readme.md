@@ -24,6 +24,7 @@ Some things included:
 - Database migrations
 - Integration tests
   - Schema per test suite/worker to prevent data clashes
+- Environments
 - Safe storage of passwords
 - Simple model validation
 
